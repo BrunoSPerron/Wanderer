@@ -1,7 +1,22 @@
 fileFormatVersion: 2
 guid: 996e66bbb3187cb48a4a88f017fe415e
 TextureImporter:
-  internalIDToNameTable: []
+  internalIDToNameTable:
+  - first:
+      213: 8944045298221116393
+    second: Desert_Obstacle_Rocks_0
+  - first:
+      213: -8814598092568141422
+    second: Desert_Obstacle_Rocks_1
+  - first:
+      213: 3610771873811449056
+    second: Desert_Obstacle_Rocks_2
+  - first:
+      213: 1980452818894130
+    second: Desert_Obstacle_Rocks_3
+  - first:
+      213: 2390099200180718291
+    second: Desert_Obstacle_Rocks_4
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -32,7 +47,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -41,12 +56,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 64
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -68,7 +83,31 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Windows Store Apps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -77,7 +116,112 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: Desert_Obstacle_Rocks_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 48
+        height: 31
+      alignment: 9
+      pivot: {x: 0.5249288, y: 0.4131515}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9ebe877afc1af1c70800000000000000
+      internalID: 8944045298221116393
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Desert_Obstacle_Rocks_1
+      rect:
+        serializedVersion: 2
+        x: 52
+        y: 0
+        width: 39
+        height: 31
+      alignment: 9
+      pivot: {x: 0.5920447, y: 0.43727642}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 291e3ae8cb14ca580800000000000000
+      internalID: -8814598092568141422
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Desert_Obstacle_Rocks_2
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 3
+        width: 33
+        height: 26
+      alignment: 9
+      pivot: {x: 0.5770532, y: 0.4022029}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0e4c08773e90c1230800000000000000
+      internalID: 3610771873811449056
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Desert_Obstacle_Rocks_3
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 0
+        width: 42
+        height: 31
+      alignment: 9
+      pivot: {x: 0.5605418, y: 0.34560272}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 23db3ca1639070000800000000000000
+      internalID: 1980452818894130
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Desert_Obstacle_Rocks_4
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 2
+        width: 30
+        height: 29
+      alignment: 9
+      pivot: {x: 0.5847585, y: 0.42263508}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3da87bc2f865b2120800000000000000
+      internalID: 2390099200180718291
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []

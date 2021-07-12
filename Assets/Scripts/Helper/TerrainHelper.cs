@@ -19,6 +19,7 @@ public static class TerrainHelper
 
     internal static bool IsWithinDistance(Vector2 coord1, Vector2 coord2, float distance)
     {
+        //TODO redo this correctly
         if (Mathf.Abs(coord1.x - coord2.x) + Mathf.Abs(coord1.y - coord2.y) < distance)
             return true;
         return false;

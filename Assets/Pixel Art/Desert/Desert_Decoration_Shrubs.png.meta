@@ -1,7 +1,34 @@
 fileFormatVersion: 2
 guid: 08c74ce55ff49ee439011dedb3760c36
 TextureImporter:
-  internalIDToNameTable: []
+  internalIDToNameTable:
+  - first:
+      213: -7412114137075553994
+    second: Desert_Decoration_Shrubs_0
+  - first:
+      213: 2060535921211235209
+    second: Desert_Decoration_Shrubs_1
+  - first:
+      213: 1674614620498593275
+    second: Desert_Decoration_Shrubs_2
+  - first:
+      213: 6308431329047829447
+    second: Desert_Decoration_Shrubs_3
+  - first:
+      213: 3816553300172883762
+    second: Desert_Decoration_Shrubs_4
+  - first:
+      213: 7062134345828007122
+    second: Desert_Decoration_Shrubs_5
+  - first:
+      213: 1506730413547936220
+    second: Desert_Decoration_Shrubs_6
+  - first:
+      213: 1123624430151434460
+    second: Desert_Decoration_Shrubs_7
+  - first:
+      213: 9142617231721453936
+    second: Desert_Decoration_Shrubs_8
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -32,7 +59,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -41,12 +68,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 64
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -68,7 +95,31 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Windows Store Apps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -77,7 +128,196 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: Desert_Decoration_Shrubs_0
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 40
+        width: 15
+        height: 23
+      alignment: 9
+      pivot: {x: 0.570159, y: 0.36926883}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 639e5f0a671e22990800000000000000
+      internalID: -7412114137075553994
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Desert_Decoration_Shrubs_1
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 41
+        width: 16
+        height: 21
+      alignment: 9
+      pivot: {x: 0.53758514, y: 0.3603977}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 98b5abec08e789c10800000000000000
+      internalID: 2060535921211235209
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Desert_Decoration_Shrubs_2
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 38
+        width: 16
+        height: 26
+      alignment: 9
+      pivot: {x: 0.59866095, y: 0.40170023}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bf58e76ff1d6d3710800000000000000
+      internalID: 1674614620498593275
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Desert_Decoration_Shrubs_3
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 38
+        width: 16
+        height: 25
+      alignment: 9
+      pivot: {x: 0.53288674, y: 0.4188159}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7cb57d9cedc0c8750800000000000000
+      internalID: 6308431329047829447
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Desert_Decoration_Shrubs_4
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 40
+        width: 16
+        height: 21
+      alignment: 9
+      pivot: {x: 0.5093961, y: 0.4033523}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 237462b610f17f430800000000000000
+      internalID: 3816553300172883762
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Desert_Decoration_Shrubs_5
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 6
+        width: 16
+        height: 25
+      alignment: 9
+      pivot: {x: 0.5375851, y: 0.4158091}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2dcf92f45cdb10260800000000000000
+      internalID: 7062134345828007122
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Desert_Decoration_Shrubs_6
+      rect:
+        serializedVersion: 2
+        x: 17
+        y: 8
+        width: 15
+        height: 21
+      alignment: 9
+      pivot: {x: 0.50501126, y: 0.41051129}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cd95dcff35bf8e410800000000000000
+      internalID: 1506730413547936220
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Desert_Decoration_Shrubs_7
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 9
+        width: 15
+        height: 22
+      alignment: 9
+      pivot: {x: 0.51002246, y: 0.34282562}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cd0802c477ae79f00800000000000000
+      internalID: 1123624430151434460
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Desert_Decoration_Shrubs_8
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 9
+        width: 15
+        height: 23
+      alignment: 9
+      pivot: {x: 0.50501126, y: 0.3300496}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0795f1ebee911ee70800000000000000
+      internalID: 9142617231721453936
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []

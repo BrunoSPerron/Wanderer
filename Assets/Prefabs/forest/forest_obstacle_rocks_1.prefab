@@ -122,4 +122,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0aabb1c224edcc6458115733e29ba1fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minDistanceFromOther: 0.54
+  MinGridRadiusDistanceFromOther: 1.1

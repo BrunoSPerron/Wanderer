@@ -122,4 +122,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0aabb1c224edcc6458115733e29ba1fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minDistanceFromOther: 0.55
+  MinGridRadiusDistanceFromOther: 0.85
+  tileAttachedTo: {x: 0, y: 0}

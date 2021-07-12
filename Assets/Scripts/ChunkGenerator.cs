@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public enum TileType { NONE, BOUNDARY, GRASS, DIRT, SAND, ARID }
+public enum TileType : byte { NONE, BOUNDARY, GRASS, DIRT, SAND, ARID }
 
 public abstract class ChunkGenerator : MonoBehaviour
 {
@@ -53,7 +53,7 @@ public abstract class ChunkGenerator : MonoBehaviour
             DoodadData dd = collection[i].GetComponent<DoodadData>();
             float distance = 0.01f;
             if (dd)
-                distance = dd.minDistanceFromOther;
+                distance = dd.MinGridRadiusDistanceFromOther;
             goi[i] = new GameObjectInfo(collection[i], distance);
         }
         return goi;
@@ -187,7 +187,7 @@ public abstract class ChunkGenerator : MonoBehaviour
         }
     }
 
-    protected void AddSome(ChunkControl cc, GameObjectInfo[] objects, int amount, bool avoidRoad = true, uint maxIterations = 100)
+    protected void AddSome(ChunkControl cc, GameObjectInfo[] objects, int amount, bool avoidRoad = true, uint maxIterations = 30)
     {
         int objectIndex = rand.Next(0, objects.Length);
         for (int i = 0; i < amount; i++)
@@ -196,16 +196,19 @@ public abstract class ChunkGenerator : MonoBehaviour
             bool hasBeenPlaced = false;
             while (!hasBeenPlaced)
             {
-                int x = rand.Next(1, cc.GridSize - 1);
-                int y = rand.Next(1, cc.GridSize - 1);
-                if (avoidRoad && !CheckForRoadAround(cc, new Vector2Int(x, y)))
+                int x = rand.Next(0, cc.GridSize);
+                int y = rand.Next(0, cc.GridSize);
+                if (avoidRoad && !IsOverRoad(cc, new Vector2Int(x, y), objects[objectIndex].radius))
                 {
-                    if (cc.TilesInfos[x, y].objectsOnTileInfos.Count == 0)
+                    if (cc.TilesInfos[x, y].objectsGridPositions.Count == 0)
                     {
-                        cc.AddDoodadAtPosition(objects[objectIndex], new Vector2(x, y));
-                        objectIndex++;
-                        objectIndex %= objects.Length;
-                        hasBeenPlaced = true;
+                        if (CheckPlacementValidity(cc, objects[objectIndex], new Vector2(x + 0.5f, y + 0.5f), out List<Vector2Int> tilesInRadius))
+                        {
+                            cc.AddDoodadAtPosition(objects[objectIndex], new Vector2(x + 0.5f, y + 0.5f), tilesInRadius);
+                            objectIndex++;
+                            objectIndex %= objects.Length;
+                            hasBeenPlaced = true;
+                        }
                     }
                 }
                 if (it > maxIterations)
@@ -215,26 +218,40 @@ public abstract class ChunkGenerator : MonoBehaviour
         }
     }
 
-    protected void PoissonDistribution(ChunkControl cc, GameObjectInfo[] objects, float averageDistance, ObjectToInstantiate[] placeAwayFrom = null, bool avoidRoad = true)
+    protected void PoissonDistribution(ChunkControl cc, GameObjectInfo[] objects, float averageDistance, bool avoidRoad = true)
     {
-        PoissonDiscSampler sampler = new PoissonDiscSampler(cc.GridSize -1, cc.GridSize - 1, averageDistance);
+        List<Tuple<GameObjectInfo, Vector2, List<Vector2Int>>> doodadToAdd = new List<Tuple<GameObjectInfo, Vector2, List<Vector2Int>>>();
+        PoissonDiscSampler sampler = new PoissonDiscSampler(cc.GridSize, cc.GridSize, averageDistance);
         int i = 0;
         foreach (Vector2 position in sampler.Samples())
         {
-            Vector2 offsettedPos = position + Vector2.one;
             int currentGoiIndex = i % objects.Length;
             bool positionIsOK = true;
             if (avoidRoad)
-                positionIsOK = !CheckForRoadAround(cc, new Vector2Int((int)position.x, (int)position.y));
+                positionIsOK = !IsOverRoad(cc, position, objects[currentGoiIndex].radius);
 
-            if (positionIsOK && CheckPlacementValidity(cc, objects[currentGoiIndex], offsettedPos))
+            if (positionIsOK && CheckPlacementValidity(cc, objects[currentGoiIndex], position, out List<Vector2Int> tilesOverlapping))
             {
-                Vector2 localPos = TerrainHelper.GridToLocal(new Vector2(offsettedPos.x, offsettedPos.y));
-                cc.AddDoodadAtPosition(objects[currentGoiIndex], offsettedPos);
+                doodadToAdd.Add(new Tuple<GameObjectInfo, Vector2, List<Vector2Int>>(objects[currentGoiIndex], position, tilesOverlapping));
                 i++;
             }
         }
+
+        foreach (Tuple<GameObjectInfo, Vector2, List<Vector2Int>> tuple in doodadToAdd)
+        {
+            cc.AddDoodadAtPosition(tuple.Item1, tuple.Item2, tuple.Item3);
+        }
     }
+
+    protected void ShatterGround(ChunkControl cc, TileType original, TileType replaceBy, int percentChance = 20, bool awayFromRoad = false)
+    {
+        for (int x = 1; x < cc.TilesInfos.GetLength(0); x++)
+            for (int y = 1; y < cc.TilesInfos.GetLength(1); y++)
+                if (!awayFromRoad || !TileIsNextToRoad(cc, new Vector2Int(x - 1, y - 1)))
+                    if (cc.TilesInfos[x, y].type == original && rand.Next(0, 100) < percentChance)
+                        cc.TilesInfos[x, y].type = replaceBy;
+    }
+
 
     protected void PoissonDistributionWithPerlinNoise(ChunkControl cc, GameObjectInfo[] objects, float averageDistance, NoiseSettings noiseSettings, int arbitraryChance = 100, AnimationCurve distributionCurve = null, bool avoidRoad = true, bool reverseNoise = false)
     {
@@ -244,7 +261,9 @@ public abstract class ChunkGenerator : MonoBehaviour
         else
             curveInstance = new AnimationCurve(distributionCurve.keys);
 
-        PoissonDiscSampler sampler = new PoissonDiscSampler(cc.GridSize - 1, cc.GridSize - 1, averageDistance);
+        List<Tuple<GameObjectInfo, Vector2, List<Vector2Int>>> doodadToAdd = new List<Tuple<GameObjectInfo, Vector2, List<Vector2Int>>>();
+
+        PoissonDiscSampler sampler = new PoissonDiscSampler(cc.GridSize, cc.GridSize, averageDistance);
         float[,] noiseMap = Noise.GenerateNoiseMap(cc.GridSize, cc.GridSize, noiseSettings, cc.ChunkCoord * cc.GridSize);
 
         int amountPlaced = 0;
@@ -252,24 +271,19 @@ public abstract class ChunkGenerator : MonoBehaviour
         {
             if (arbitraryChance > rand.Next(0, 100))
             {
-                Vector2 offsettedPos = position + Vector2.one;
-                int x = (int)offsettedPos.x;
-                int y = (int)offsettedPos.y;
+                int x = (int)position.x;
+                int y = (int)position.y;
                 bool placeThisOne = true;
                 int currentGoiIndex = amountPlaced % objects.Length;
                 if (avoidRoad)
                 {
-                    if (objects[currentGoiIndex].minDistanceFromOther < 0.4)
-                        placeThisOne = !cc.IsRoad[x, y];
-                    else
-                        placeThisOne = !CheckForRoadAround(cc, new Vector2Int(x, y));
+                    placeThisOne = !IsOverRoad(cc, new Vector2Int(x, y), objects[currentGoiIndex].radius);
                 }
 
                 if (reverseNoise)
                 {
                     if (noiseMap[x, y] > curveInstance.Evaluate((float)rand.NextDouble()))
                         placeThisOne = false;
-
                 }
                 else
                 {
@@ -277,38 +291,35 @@ public abstract class ChunkGenerator : MonoBehaviour
                         placeThisOne = false;
                 }
 
-                if (placeThisOne && CheckPlacementValidity(cc, objects[currentGoiIndex], offsettedPos))
+                if (placeThisOne && CheckPlacementValidity(cc, objects[currentGoiIndex], position, out List<Vector2Int> tilesOverlapping))
                 {
-                    cc.AddDoodadAtPosition(objects[currentGoiIndex], offsettedPos);
+                    doodadToAdd.Add(new Tuple<GameObjectInfo, Vector2, List<Vector2Int>>(objects[currentGoiIndex], position, tilesOverlapping));
                     amountPlaced++;
                 }
             }
+        }
+        foreach (Tuple<GameObjectInfo, Vector2, List<Vector2Int>> tuple in doodadToAdd)
+        {
+            cc.AddDoodadAtPosition(tuple.Item1, tuple.Item2, tuple.Item3);
         }
     }
     protected void PoissonDistributionWithPerlinNoise(ChunkControl cc, GameObjectInfo[] objects, float averageDistance, NoiseSettings noise, AnimationCurve distributionCurve)
     {
         PoissonDistributionWithPerlinNoise(cc, objects, averageDistance, noise, 100, distributionCurve);
     }
-    private bool CheckPlacementValidity(ChunkControl cc, GameObjectInfo goi, Vector2 gridPosition, int extendedRadiusCheck = 1)
+
+    private bool CheckPlacementValidity(ChunkControl cc, GameObjectInfo goi, Vector2 gridPosition, out List<Vector2Int> tilesInRadius)
     {
         Stack<Tuple<Vector2, float>> checkAgainst = new Stack<Tuple<Vector2, float>>();
+        tilesInRadius = GetTilesInRadius(cc, gridPosition, goi.radius);
 
-        int radiusCheck = (int)(goi.minDistanceFromOther * 2 + extendedRadiusCheck + 1);
-        Vector2Int topLeft = new Vector2Int((int)gridPosition.x, (int)gridPosition.y);
-        for (int x = -radiusCheck; x <= radiusCheck; x++)
+        foreach (Vector2Int v2i in tilesInRadius)
         {
-            for (int y = -radiusCheck; y <= radiusCheck; y++)
+            for (int i = 0; i < cc.TilesInfos[v2i.x, v2i.y].objectsGridPositions.Count; i++)
             {
-                int indexX = (int)gridPosition.x + x;
-                int indexY = (int)gridPosition.y + y;
-
-                if (indexX >= 0 && indexX < cc.TilesInfos.GetLength(0) && indexY >= 0 && indexY < cc.TilesInfos.GetLength(1))
-                    for (int i = 0; i < cc.TilesInfos[indexX, indexY].objectsGridPositions.Count; i++)
-                    {
-                        Vector2 position = cc.TilesInfos[indexX, indexY].objectsGridPositions[i];
-                        float minDistance = cc.TilesInfos[indexX, indexY].objectsOnTileInfos[i].minDistanceFromOther;
-                        checkAgainst.Push(new Tuple<Vector2, float>(position, minDistance));
-                    }
+                Vector2 position = cc.TilesInfos[v2i.x, v2i.y].objectsGridPositions[i];
+                float minDistance = cc.TilesInfos[v2i.x, v2i.y].objectsRadius[i];
+                checkAgainst.Push(new Tuple<Vector2, float>(position, minDistance));
             }
         }
 
@@ -316,37 +327,95 @@ public abstract class ChunkGenerator : MonoBehaviour
         {
             Tuple<Vector2, float> currentCheck = checkAgainst.Pop();
 
-            if (TerrainHelper.IsWithinDistance(gridPosition, currentCheck.Item1, goi.minDistanceFromOther + currentCheck.Item2))
+            if (TerrainHelper.IsWithinDistance(gridPosition, currentCheck.Item1, goi.radius + currentCheck.Item2))
                 return false;
         }
 
         return true;
     }
 
-    private bool CheckForRoadAround(ChunkControl cc, Vector2Int gridPosition)
+    private bool IsOverRoad(ChunkControl cc, Vector2 gridPosition, float objectRadius)
     {
-        if (gridPosition.x < cc.GridSize - 1)
-        {
-            if (cc.IsRoad[gridPosition.x + 1, gridPosition.y] == true) return true;
-            if (gridPosition.y < cc.GridSize - 1)
-                if (cc.IsRoad[gridPosition.x + 1, gridPosition.y + 1] == true) return true;
-            if (gridPosition.y > 0)
-                if (cc.IsRoad[gridPosition.x + 1, gridPosition.y - 1] == true) return true;
-        }
-        if (gridPosition.x > 0)
-        {
-            if (cc.IsRoad[gridPosition.x - 1, gridPosition.y] == true) return true;
-            if (gridPosition.y < cc.GridSize - 1)
-                if (cc.IsRoad[gridPosition.x - 1, gridPosition.y + 1] == true) return true;
-            if (gridPosition.y > 0)
-                if (cc.IsRoad[gridPosition.x - 1, gridPosition.y - 1] == true) return true;
-        }
-        if (gridPosition.y < cc.GridSize - 1)
-            if (cc.IsRoad[gridPosition.x, gridPosition.y + 1] == true) return true;
-        if (gridPosition.y > 0)
-            if (cc.IsRoad[gridPosition.x, gridPosition.y - 1] == true) return true;
+        float radiusSquared = objectRadius * objectRadius;
+
+        int minX = Mathf.FloorToInt(gridPosition.x - objectRadius);
+        int maxX = Mathf.CeilToInt(gridPosition.x + objectRadius);
+        int minY = Mathf.FloorToInt(gridPosition.y - objectRadius);
+        int maxY = Mathf.CeilToInt(gridPosition.y + objectRadius);
+
+        if (minX < 0)
+            minX = 0;
+        if (maxX > cc.IsRoad.GetLength(0) - 1)
+            maxX = cc.IsRoad.GetLength(0) - 1;
+        if (minY < 0)
+            minY = 0;
+        if (maxY > cc.IsRoad.GetLength(1) - 1)
+            maxY = cc.IsRoad.GetLength(1) - 1;
+
+        for (int x = minX; x <= maxX; x++)
+            for (int y = minY; y < maxY; y++)
+                if (cc.IsRoad[x, y] && CircleOverlapTile(new Vector2Int(x, y), gridPosition, radiusSquared))
+                    return true;
+
         return false;
     }
+    private bool TileIsNextToRoad(ChunkControl cc, Vector2Int gridPosition, int checkDistance = 1)
+    {
+        for (int x = gridPosition.x - checkDistance; x <= gridPosition.x + checkDistance; x++)
+            for (int y = gridPosition.y - checkDistance; y <= gridPosition.y + checkDistance; y++)
+                if (InBounds(cc.IsRoad, x, y) && cc.IsRoad[x, y])
+                    return true;
+
+        return false;
+    }
+
+    private List<Vector2Int> GetTilesInRadius(ChunkControl cc, Vector2 circleCenter, float radius)
+    {
+        List<Vector2Int> tilesInRadius = new List<Vector2Int>();
+        float radiusSquared = radius * radius;
+
+        int minX = Mathf.FloorToInt(circleCenter.x - radius);
+        int maxX = Mathf.CeilToInt(circleCenter.x + radius);
+        int minY = Mathf.FloorToInt(circleCenter.y - radius);
+        int maxY = Mathf.CeilToInt(circleCenter.y + radius);
+
+        if (minX < 0)
+            minX = 0;
+        if (maxX > cc.TilesInfos.GetLength(0) - 1)
+            maxX = cc.TilesInfos.GetLength(0) - 1;
+        if (minY < 0)
+            minY = 0;
+        if (maxY > cc.TilesInfos.GetLength(1) - 1)
+            maxY = cc.TilesInfos.GetLength(1) - 1;
+
+        for (int x = minX; x <= maxX; x++)
+        {
+            for (int y = minY; y < maxY; y++)
+            {
+                Vector2Int current = new Vector2Int(x, y);
+                if (CircleOverlapTile(current, circleCenter, radiusSquared))
+                    tilesInRadius.Add(current);
+            }
+        }
+        return tilesInRadius;
+    }
+
+    private bool CircleOverlapTile(Vector2Int tileCoord, Vector2 circleCenter, float radiusSquared)
+    {
+        Vector2 tileHalfSize = new Vector2(0.5f, 0.5f);
+        Vector2 tileCenter = tileCoord + tileHalfSize;
+        Vector2 diff = tileCenter - circleCenter;
+        Vector2 diffPositive = new Vector2(Math.Abs(diff.x), Math.Abs(diff.y));
+        Vector2 closest = diffPositive - tileHalfSize;
+        Vector2 closestPositive = new Vector2(Math.Max(closest.x, 0), Math.Max(closest.y, 0));
+        return closestPositive.sqrMagnitude <= radiusSquared;
+    }
+
+    protected bool InBounds<T>(in T[,] array, int x, int y)
+    {
+        return x >= 0 && x < array.GetLength(0) && y >= 0 && y < array.GetLength(1);
+    }
+
 
     struct ChunkThreadInfo<T>
     {
@@ -364,11 +433,11 @@ public abstract class ChunkGenerator : MonoBehaviour
 public struct GameObjectInfo
 {
     public readonly GameObject gameObject;
-    public readonly float minDistanceFromOther;
+    public readonly float radius;
 
-    public GameObjectInfo(GameObject gameObject, float minDistanceFromOther)
+    public GameObjectInfo(GameObject gameObject, float radius)
     {
         this.gameObject = gameObject;
-        this.minDistanceFromOther = minDistanceFromOther;
+        this.radius = radius;
     }
 }

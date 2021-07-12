@@ -18,9 +18,12 @@ public class ChunkControl
 
     private Stack<TileToInstantiate> TilesToInstantiate;
 
+    private Stack<ObjectToInstantiate> ObjectsToInstantiate;
+
     public ChunkControl(Vector2Int coord, int gridSize, Vector2Int[] entrances)
     {
         TilesToInstantiate = new Stack<TileToInstantiate>();
+        ObjectsToInstantiate = new Stack<ObjectToInstantiate>();
 
         ChunkCoord = coord;
         Entrances = entrances;
@@ -37,22 +40,45 @@ public class ChunkControl
         }
     }
 
-    public ObjectToInstantiate AddDoodadAtPosition(GameObjectInfo go,  Vector2 gridPos)
+    public void InitiateChunk()
     {
-        Vector2 localPos = TerrainHelper.GridToLocal(gridPos);
-        int x = Mathf.RoundToInt(gridPos.x);
-        int y = Mathf.RoundToInt(gridPos.y);
+        Chunk = new GameObject("Chunk " + ChunkCoord);
+
+        Grid grid = Chunk.AddComponent<Grid>();
+        grid.cellLayout = GridLayout.CellLayout.Isometric;
+        grid.cellSize = new Vector3(.5f, .25f, .5f);
+
+        GameObject mapContainer = new GameObject("Tilemap");
+        mapContainer.transform.parent = Chunk.transform;
+        mapContainer.transform.position = new Vector3(0, -0.05f, 0);
+        TileMap = mapContainer.AddComponent<Tilemap>();
+
+        TilemapRenderer tileMapRenderer = mapContainer.AddComponent<TilemapRenderer>();
+        tileMapRenderer.sortOrder = TilemapRenderer.SortOrder.TopRight;
+        tileMapRenderer.sortingLayerName = "Floor";
+        //tileMapRenderer.mode = TilemapRenderer.Mode.Individual; //For mixed tileset
+        Chunk.transform.position = TerrainHelper.GridToLocal(ChunkCoord) * GridSize;
+    }
+
+    public void AddDoodadAtPosition(GameObjectInfo go, Vector2 gridPos, List<Vector2Int> tilesInRadius)
+    {
+        Vector2 localPos = TerrainHelper.GridToLocal(gridPos + Vector2.one);
+        int x = (int)gridPos.x + 1;
+        int y = (int)gridPos.y + 1;
         try
         {
-            TilesInfos[x, y].objectsOnTileInfos.Add(go);
-            TilesInfos[x, y].objectsGridPositions.Add(gridPos);
-            TilesInfos[x, y].objectToInstantiates.Push(new ObjectToInstantiate(go.gameObject, localPos));
+            foreach (Vector2Int v2i in tilesInRadius)
+            {
+                TilesInfos[v2i.x, v2i.y].objectsRadius.Add(go.radius);
+                TilesInfos[v2i.x, v2i.y].objectsGridPositions.Add(gridPos);
+            }
         }
         catch
         {
-            throw new System.Exception("error while preparing chunk. Failed to add doodad at grid pos: " + gridPos + " - local pos: " + localPos);
+            throw new System.Exception("ChunkError_DoodadPlacement: Invalid tile position in Doodad radius");
         }
-        return TilesInfos[x, y].objectToInstantiates.Peek();
+
+        ObjectsToInstantiate.Push(new ObjectToInstantiate(go.gameObject, localPos));
     }
 
     public TileToInstantiate AddTileToInstantiate(TileBase tile, Vector2Int gridPos)
@@ -64,23 +90,7 @@ public class ChunkControl
     public bool KeepInstantiating(int amount)
     {
         if (Chunk == null)
-        {
-            Chunk = new GameObject("Chunk " + ChunkCoord);
-
-            Grid grid = Chunk.AddComponent<Grid>();
-            grid.cellLayout = GridLayout.CellLayout.Isometric;
-            grid.cellSize = new Vector3(.5f, .25f, .5f);
-
-            GameObject mapContainer = new GameObject("Tilemap");
-            mapContainer.transform.parent = Chunk.transform;
-            mapContainer.transform.position = new Vector3(0, -0.25f, 0);
-            TileMap = mapContainer.AddComponent<Tilemap>();
-
-            TilemapRenderer tileMapRenderer = mapContainer.AddComponent<TilemapRenderer>();
-            tileMapRenderer.sortOrder = TilemapRenderer.SortOrder.TopRight;
-            tileMapRenderer.sortingLayerName = "Floor";
-            Chunk.transform.position = TerrainHelper.GridToLocal(ChunkCoord) * GridSize;
-        }
+            InitiateChunk();
 
         if (TilesToInstantiate.Count > 0)
         {
@@ -90,17 +100,21 @@ public class ChunkControl
             {
                 TileToInstantiate current = TilesToInstantiate.Pop();
                 TileMap.SetTile(new Vector3Int(current.gridPos.x, current.gridPos.y, 0), current.tile);
-                while (TilesInfos[current.gridPos.x, current.gridPos.y].objectToInstantiates.Count != 0)
-                {
-                    ObjectToInstantiate goi = TilesInfos[current.gridPos.x, current.gridPos.y].objectToInstantiates.Pop();
-                    GameObject goInstance = Object.Instantiate(goi.gameObject, goi.localPos, Quaternion.identity, Chunk.transform);
-                    goInstance.transform.position += Chunk.transform.position;
-                    goInstance.GetComponent<DoodadData>().tileAttachedTo = current.gridPos;
-                    i++;
-                }
             }
         }
-        
+        else if (ObjectsToInstantiate.Count > 0)
+        {
+            if (amount > ObjectsToInstantiate.Count)
+                amount = ObjectsToInstantiate.Count;
+
+            for (int i = 0; i < amount; i++)
+            {
+                ObjectToInstantiate current = ObjectsToInstantiate.Pop();
+                GameObject goInstance = Object.Instantiate(current.gameObject, current.localPos, Quaternion.identity, Chunk.transform);
+                goInstance.transform.position += Chunk.transform.position;
+            }
+        }
+
         else return true;
 
         return false;
@@ -153,15 +167,13 @@ public class ChunkControl
 public struct tileInfo
 {
     public TileType type;
-    public List<GameObjectInfo> objectsOnTileInfos;
+    public List<float> objectsRadius;
     public List<Vector2> objectsGridPositions;
-    public Stack<ObjectToInstantiate> objectToInstantiates;
     public tileInfo(TileType type)
     {
         this.type = type;
-        objectsOnTileInfos = new List<GameObjectInfo>();
+        objectsRadius = new List<float>();
         objectsGridPositions = new List<Vector2>();
-        objectToInstantiates = new Stack<ObjectToInstantiate>();
     }
 }
 

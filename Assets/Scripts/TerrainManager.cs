@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Cardinal { E, NE, N, NW, W, SW, S, SE }
+public enum Cardinal : byte { E, NE, N, NW, W, SW, S, SE }
 public class TerrainManager : MonoBehaviour
 {
     public GameObject PlayerAvatar;
@@ -14,8 +14,8 @@ public class TerrainManager : MonoBehaviour
     public BiomeGenerator BiomeGenerator;
     BiomeMapInfo BiomeMapInfo;
 
-    public ChunkGenerator_Forest ForestChunkGenerator;
-    public ChunkGenerator_Desert DesertChunkGenerator;
+    public ChunkGenerator ForestChunkGenerator;
+    public ChunkGenerator DesertChunkGenerator;
 
     private ChunkControl[,] Chunks;
     private List<Vector2Int> ChunksRequested;
@@ -40,8 +40,9 @@ public class TerrainManager : MonoBehaviour
     {
         Vector2 floatyPlayerGridPos = TerrainHelper.LocalToGrid(new Vector2(PlayerAvatar.transform.position.x, PlayerAvatar.transform.position.y)) / ChunkSize;
         playerGridPosition = new Vector2Int((int)floatyPlayerGridPos.x, (int)floatyPlayerGridPos.y);
-        
-        ActivateChunkAround(playerGridPosition);
+
+        //ActivateChunkAround(playerGridPosition);
+        ActivateChunk(playerGridPosition);
        
         if (ChunksStillLoading.Count > 0)
         {
@@ -134,11 +135,7 @@ public class TerrainManager : MonoBehaviour
 
 
 /*
-    > 
-   /   y
-  /
- 
-  \
-   \   x
-    >
+  Y <    > X 
+     \  /
+      \/
 */

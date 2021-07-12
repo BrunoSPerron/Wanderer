@@ -8,7 +8,7 @@ public class ChunkGenerator_Forest : ChunkGenerator
     public TileBase ForestGrassTile;
     public TileBase ForestDirtTile;
 
-    public BiomeData_Forest ForestData;
+    public BiomeData_Forest BiomeData;
 
     public GameObject[] Trees;
     public GameObject[] Bushes;
@@ -37,12 +37,13 @@ public class ChunkGenerator_Forest : ChunkGenerator
 
         FillWith(cc, TileType.GRASS);
         AddRoads(cc, TileType.DIRT);
-
-        AddSome(cc, RocksWithInfos, rand.Next(0, 5));
-        PoissonDistribution(cc, TreesWithInfos, ForestData.TreesSparcity);
-        PoissonDistributionWithPerlinNoise(cc, BushesWithInfos, ForestData.BushesSparcity, ForestData.BushesNoiseSettings, ForestData.BushesDistributionCurve);
-        PoissonDistributionWithPerlinNoise(cc, SmallBushesWithInfos, ForestData.SmallBushesSparcity, ForestData.BushesNoiseSettings, ForestData.BushesDistributionCurve);
-        PoissonDistributionWithPerlinNoise(cc, SmallPlantsWithInfos, 1.2f, ForestData.BushesNoiseSettings, ForestData.FlowerChance, ForestData.BushesDistributionCurve, true, true);
+        AddSome(cc, RocksWithInfos, rand.Next(BiomeData.MinAmountOfRock, BiomeData.MaxAmountOfRock));
+        PoissonDistribution(cc, TreesWithInfos, BiomeData.TreesSparcity);
+        PoissonDistributionWithPerlinNoise(cc, BushesWithInfos, BiomeData.BushesSparcity, BiomeData.BushesNoiseSettings, BiomeData.BushesDistributionCurve);
+        PoissonDistributionWithPerlinNoise(cc, SmallBushesWithInfos, BiomeData.SmallBushesSparcity, BiomeData.BushesNoiseSettings, BiomeData.SmallBushesDistributionCurve);
+        PoissonDistributionWithPerlinNoise(cc, SmallPlantsWithInfos, BiomeData.FlowerSparcity, BiomeData.BushesNoiseSettings, BiomeData.FlowerChance, BiomeData.SmallBushesDistributionCurve, true, true);
+        
+        ShatterGround(cc, TileType.GRASS, TileType.DIRT, 100 - BiomeData.GroundCohesion, true);
 
         Dictionary<TileType, TileBase> tileDict = new Dictionary<TileType, TileBase>();
         tileDict.Add(TileType.GRASS, ForestGrassTile);

@@ -22,7 +22,7 @@ using System.Collections.Generic;
 public class PoissonDiscSampler
 {
     private System.Random rand;
-    private const int k = 30;  // Maximum number of attempts before marking a sample as inactive.
+    private const int k = 10;  // Maximum number of attempts before marking a sample as inactive.
 
     private readonly Rect rect;
     private readonly float radius2;  // radius squared

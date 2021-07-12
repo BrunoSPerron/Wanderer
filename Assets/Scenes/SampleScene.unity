@@ -352,7 +352,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_AssetsPPU: 64
-  m_RefResolutionX: 360
+  m_RefResolutionX: 320
   m_RefResolutionY: 240
   m_UpscaleRT: 1
   m_PixelSnapping: 0
@@ -427,8 +427,9 @@ GameObject:
   - component: {fileID: 588184133}
   - component: {fileID: 588184132}
   - component: {fileID: 588184131}
-  - component: {fileID: 588184130}
   - component: {fileID: 588184129}
+  - component: {fileID: 588184130}
+  - component: {fileID: 588184134}
   m_Layer: 0
   m_Name: TerrainManager
   m_TagString: Untagged
@@ -451,7 +452,7 @@ MonoBehaviour:
   BoundaryTile: {fileID: 11400000, guid: af284d6ebe600df4f9006ecc2c7a8766, type: 2}
   ForestGrassTile: {fileID: 11400000, guid: 79ed0b5fd74041b46ad9b4a97e8f001e, type: 2}
   ForestDirtTile: {fileID: 11400000, guid: 4a93726958f310b409c85052223ae324, type: 2}
-  ForestData: {fileID: 11400000, guid: 10c52fef8c87a284f82e5e61cdc7d77c, type: 2}
+  BiomeData: {fileID: 11400000, guid: 10c52fef8c87a284f82e5e61cdc7d77c, type: 2}
   Trees:
   - {fileID: 2125584821086762701, guid: 0542f3c547d53914c8d63d954afad21d, type: 3}
   - {fileID: 9108555908823085708, guid: 96663a6ffbdc8d040b99242b68d9f1ef, type: 3}
@@ -490,7 +491,7 @@ MonoBehaviour:
   - {fileID: 5895165929024211630, guid: 68349fda42f57ce4582540b2ff1aa5f2, type: 3}
   - {fileID: 9220336835596144289, guid: c5cddc1f94fa55d4ab0e4cbf35bff2a1, type: 3}
   - {fileID: 4041156901259251237, guid: a253476ca66edad4782b274642933c9a, type: 3}
-  - {fileID: 4490552250279956577, guid: 45f5f1523c7c66e47bc66cc908983e0f, type: 3}
+  - {fileID: 3280564241945278435, guid: df6821328fae4664891997f19473b033, type: 3}
 --- !u!114 &588184130
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -504,14 +505,42 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BoundaryTile: {fileID: 11400000, guid: af284d6ebe600df4f9006ecc2c7a8766, type: 2}
-  SandTile: {fileID: 11400000, guid: e62a16f74a54fc74c8b9241dac67b059, type: 2}
+  SandTile: {fileID: 11400000, guid: 22482f42d8c87a44da5e2f608c1da97f, type: 2}
   AridTile: {fileID: 11400000, guid: 1d963ae9eab7cdd4a9e919495d5951dd, type: 2}
+  BiomeData: {fileID: 11400000, guid: bd1490118fc9a7242900719c9e2c1b7d, type: 2}
   Cacti:
   - {fileID: 8735324685927518504, guid: e69c7ba153faf2b489d2c916a5557de7, type: 3}
   - {fileID: 4468345564194275858, guid: b0eb93f2f56173048877de9c4dafc29a, type: 3}
   - {fileID: 8047458351814322428, guid: 748593deabc069542bae78b5a2df6ac3, type: 3}
   - {fileID: 3292466871953316519, guid: 1d316597d7c2bb24a9cf0c41a96960e8, type: 3}
   - {fileID: 3093459974095113761, guid: 200bf9e9cf9b81245b803a3b55a8beef, type: 3}
+  - {fileID: 7638926138816214106, guid: 383ba0d8422f81f4f875e90afd9b1ca4, type: 3}
+  - {fileID: 4333116057873154762, guid: 29a0d3b6855c4d24694b595a3d5763e5, type: 3}
+  Rocks:
+  - {fileID: 1142951789732186560, guid: 12ae9915a91ff8a479c774720b25c3a6, type: 3}
+  - {fileID: 397906304070645818, guid: 59d61c702d9165440a277b1efebd1ab4, type: 3}
+  - {fileID: 66812302941489602, guid: 7c8bd7dd4742d8246ad32912a6e77209, type: 3}
+  - {fileID: 392592828772339551, guid: 1e5480b442282964aab414d55e739129, type: 3}
+  - {fileID: 7865085943981128963, guid: 6e0256547be44424aa4d1ba2af5c6fdb, type: 3}
+  Bones:
+  - {fileID: 2142303729048628066, guid: abda7118e0a27b848bc058af1f5bfcac, type: 3}
+  - {fileID: 6989931674600296967, guid: 2b54ea050ad42674482e594b8eeabd35, type: 3}
+  Trees:
+  - {fileID: 8387483914924428225, guid: 52fa6190788e5b24f8e7087413cfc3c1, type: 3}
+  - {fileID: 3786933562179352293, guid: 5f94a68dc7a54f2468f9562f1a59a637, type: 3}
+  - {fileID: 1428146154507696320, guid: a65280ea41c2ebc46b8528ccb705d58a, type: 3}
+  - {fileID: 6579374356341229998, guid: 017da82477571844cadb449d38dd3a16, type: 3}
+  - {fileID: 6707455143853356731, guid: 18ce3a189d0824248b1c68d5cfbed3ec, type: 3}
+  Shrubs:
+  - {fileID: 45571570799548466, guid: 3893a9ed1cce2f24d984bb6d15301031, type: 3}
+  - {fileID: 7926671277827171651, guid: 09e38c56022399c4a837a04676b33995, type: 3}
+  - {fileID: 1107633010586302571, guid: e98fa9fc42023bd408172aa0bf82d54c, type: 3}
+  - {fileID: 2772299844568627423, guid: 669c8b8a97281cf47af992970b73a3d0, type: 3}
+  - {fileID: 1504309448794723334, guid: 8ee006bd2f790a84aa43133122b0f239, type: 3}
+  - {fileID: 1442993367163164597, guid: 442687ec85f4cfc458ac5cf81353fda4, type: 3}
+  - {fileID: 5442686549161435949, guid: 072d2a5c98b314a40983a14da712e57d, type: 3}
+  - {fileID: 2801970607228042977, guid: 0baf5a36a9d123745aa857c56f17efd3, type: 3}
+  - {fileID: 3615588635147108298, guid: d63c7e38366d012448ffdc46a629151c, type: 3}
 --- !u!114 &588184131
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -565,6 +594,24 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &588184134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 588184128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22c6ac4773c0878418706d6d4233212b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BoundaryTile: {fileID: 11400000, guid: af284d6ebe600df4f9006ecc2c7a8766, type: 2}
+  ForestGrassTile: {fileID: 11400000, guid: 79ed0b5fd74041b46ad9b4a97e8f001e, type: 2}
+  ForestDirtTile: {fileID: 11400000, guid: 4a93726958f310b409c85052223ae324, type: 2}
+  DesertSandTile: {fileID: 11400000, guid: 22482f42d8c87a44da5e2f608c1da97f, type: 2}
+  Rocks:
+  - {fileID: 8429958458600897553, guid: df7ab1d29acf3634fb301878ca09c68b, type: 3}
 --- !u!1 &695518141
 GameObject:
   m_ObjectHideFlags: 0
@@ -688,6 +735,168 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!1 &1335931114
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1335931115}
+  - component: {fileID: 1335931117}
+  - component: {fileID: 1335931116}
+  m_Layer: 0
+  m_Name: Tilemap
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1335931115
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1335931114}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1910639848}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!483693784 &1335931116
+TilemapRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1335931114}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 0
+  m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_ChunkSize: {x: 32, y: 32, z: 32}
+  m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
+  m_MaxChunkCount: 16
+  m_MaxFrameAge: 16
+  m_SortOrder: 3
+  m_Mode: 0
+  m_DetectChunkCullingBounds: 0
+  m_MaskInteraction: 0
+--- !u!1839735485 &1335931117
+Tilemap:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1335931114}
+  m_Enabled: 1
+  m_Tiles: {}
+  m_AnimatedTiles: {}
+  m_TileAssetArray: []
+  m_TileSpriteArray: []
+  m_TileMatrixArray: []
+  m_TileColorArray: []
+  m_TileObjectToInstantiateArray: []
+  m_AnimationFrameRate: 1
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Origin: {x: 0, y: 0, z: 0}
+  m_Size: {x: 0, y: 0, z: 1}
+  m_TileAnchor: {x: 0.5, y: 0.5, z: 0}
+  m_TileOrientation: 0
+  m_TileOrientationMatrix:
+    e00: 1
+    e01: 0
+    e02: 0
+    e03: 0
+    e10: 0
+    e11: 1
+    e12: 0
+    e13: 0
+    e20: 0
+    e21: 0
+    e22: 1
+    e23: 0
+    e30: 0
+    e31: 0
+    e32: 0
+    e33: 1
+--- !u!1 &1910639846
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1910639848}
+  - component: {fileID: 1910639847}
+  m_Layer: 0
+  m_Name: Grid
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!156049354 &1910639847
+Grid:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1910639846}
+  m_Enabled: 1
+  m_CellSize: {x: 0.5, y: 0.25, z: 0.5}
+  m_CellGap: {x: 0, y: 0, z: 0}
+  m_CellLayout: 3
+  m_CellSwizzle: 0
+--- !u!4 &1910639848
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1910639846}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.014, y: 797.931, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1335931115}
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2038722463
 GameObject:
   m_ObjectHideFlags: 0

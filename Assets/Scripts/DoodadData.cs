@@ -4,6 +4,6 @@ using UnityEngine;
 
 public class DoodadData : MonoBehaviour
 {
-    public float minDistanceFromOther;
-    public Vector2 tileAttachedTo;
+    public float MinGridRadiusDistanceFromOther;
+    //public Vector2 tileAttachedTo;
 }

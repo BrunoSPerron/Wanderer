@@ -5,7 +5,7 @@ using UnityEngine;
 using csDelaunay;
 using System;
 
-public enum Biome { NULL, FOREST, DESERT, SAVANNA, TUNDRA, WASTELAND, SHRUBLAND, BOREAL, RAINFOREST }
+public enum Biome : byte { NULL, FOREST, DESERT, SWAMP, MUSHROOM }
 
 public class BiomeGenerator : MonoBehaviour
 {
@@ -58,23 +58,15 @@ public class BiomeGenerator : MonoBehaviour
 
         return Sprite.Create(texture, new Rect(0, 0, width, height), new Vector2(0, 0));
 
-        Color GetBiomeColor(Biome biome)
-        {
-            return biome switch
+        Color GetBiomeColor(Biome biome) => biome switch
             {
                 Biome.NULL => Color.black,
                 Biome.FOREST => new Color(0, 0.5f, 0),
                 Biome.DESERT => new Color(0.885f, 0.8f, 0.45f),
-                Biome.SAVANNA => Color.yellow,
-                Biome.TUNDRA => Color.cyan,
-                Biome.WASTELAND => Color.black,
-                Biome.SHRUBLAND => Color.magenta,
-                Biome.BOREAL => Color.white,
-                Biome.RAINFOREST => Color.blue,
+                Biome.SWAMP => Color.gray,
                 _ => Color.black,
             };
         }
-    }
 
     private Biome[,] BlurWithPerlin(Biome[,] oldMap)
     {
