@@ -23,11 +23,11 @@ public class ChunkGenerator_Desert : ChunkGenerator
 
     void Start()
     {
-        CactiInfos = ExtractInfoFrom(Cacti);
-        RocksInfos = ExtractInfoFrom(Rocks);
-        BonesInfos = ExtractInfoFrom(Bones);
-        TreesInfos = ExtractInfoFrom(Trees);
-        ShrubsInfos = ExtractInfoFrom(Shrubs);
+        CactiInfos = ExtractInfosFrom(Cacti);
+        RocksInfos = ExtractInfosFrom(Rocks);
+        BonesInfos = ExtractInfosFrom(Bones);
+        TreesInfos = ExtractInfosFrom(Trees);
+        ShrubsInfos = ExtractInfosFrom(Shrubs);
     }
 
     protected override ChunkControl GenerateChunk(Vector2Int chunkCoord, int ChunkSize, Vector2Int[] entrances = null)

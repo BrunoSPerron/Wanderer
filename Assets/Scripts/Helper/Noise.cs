@@ -27,7 +27,7 @@ public static class Noise
         for (int i = 0; i < settings.octaves; i++)
         {
             float offsetX = srand.Next(-100000, 100000) + settings.offset.x + sampleCentre.x;
-            float offsetY = srand.Next(-100000, 100000) - settings.offset.y - sampleCentre.y;
+            float offsetY = srand.Next(-100000, 100000) + settings.offset.y + sampleCentre.y;
             octaveOffsets[i] = new Vector2(offsetX, offsetY);
 
             maxPossibleHeight += amplitude;

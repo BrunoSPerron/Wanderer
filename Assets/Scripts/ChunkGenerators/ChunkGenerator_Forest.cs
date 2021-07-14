@@ -24,11 +24,11 @@ public class ChunkGenerator_Forest : ChunkGenerator
 
     void Start()
     {
-        TreesWithInfos = ExtractInfoFrom(Trees);
-        BushesWithInfos = ExtractInfoFrom(Bushes);
-        SmallBushesWithInfos = ExtractInfoFrom(SmallBushes);
-        SmallPlantsWithInfos = ExtractInfoFrom(SmallPlants);
-        RocksWithInfos = ExtractInfoFrom(Rocks);
+        TreesWithInfos = ExtractInfosFrom(Trees);
+        BushesWithInfos = ExtractInfosFrom(Bushes);
+        SmallBushesWithInfos = ExtractInfosFrom(SmallBushes);
+        SmallPlantsWithInfos = ExtractInfosFrom(SmallPlants);
+        RocksWithInfos = ExtractInfosFrom(Rocks);
     }
 
     protected override ChunkControl GenerateChunk(Vector2Int chunkCoord, int ChunkSize, Vector2Int[] entrances = null)

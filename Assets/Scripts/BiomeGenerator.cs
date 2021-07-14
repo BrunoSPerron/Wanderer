@@ -63,7 +63,7 @@ public class BiomeGenerator : MonoBehaviour
                 Biome.NULL => Color.black,
                 Biome.FOREST => new Color(0, 0.5f, 0),
                 Biome.DESERT => new Color(0.885f, 0.8f, 0.45f),
-                Biome.SWAMP => Color.gray,
+                Biome.SWAMP => new Color(0.1f, 0.42f, 0.34f),
                 _ => Color.black,
             };
         }

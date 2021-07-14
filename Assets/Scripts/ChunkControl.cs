@@ -20,6 +20,8 @@ public class ChunkControl
 
     private Stack<ObjectToInstantiate> ObjectsToInstantiate;
 
+    internal bool individualRendererMode = false;
+
     public ChunkControl(Vector2Int coord, int gridSize, Vector2Int[] entrances)
     {
         TilesToInstantiate = new Stack<TileToInstantiate>();
@@ -50,13 +52,15 @@ public class ChunkControl
 
         GameObject mapContainer = new GameObject("Tilemap");
         mapContainer.transform.parent = Chunk.transform;
-        mapContainer.transform.position = new Vector3(0, -0.05f, 0);
+        //mapContainer.transform.position = new Vector3(0, -0.05f, 0);
         TileMap = mapContainer.AddComponent<Tilemap>();
 
         TilemapRenderer tileMapRenderer = mapContainer.AddComponent<TilemapRenderer>();
         tileMapRenderer.sortOrder = TilemapRenderer.SortOrder.TopRight;
         tileMapRenderer.sortingLayerName = "Floor";
-        //tileMapRenderer.mode = TilemapRenderer.Mode.Individual; //For mixed tileset
+        
+        if (individualRendererMode)
+            tileMapRenderer.mode = TilemapRenderer.Mode.Individual;
         Chunk.transform.position = TerrainHelper.GridToLocal(ChunkCoord) * GridSize;
     }
 

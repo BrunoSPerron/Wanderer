@@ -15,7 +15,7 @@ public class ChunkGenerator_TEST : ChunkGenerator
     // Start is called before the first frame update
     void Start()
     {
-        RocksWithInfos = ExtractInfoFrom(Rocks);
+        RocksWithInfos = ExtractInfosFrom(Rocks);
     }
 
     protected override ChunkControl GenerateChunk(Vector2Int chunkCoord, int ChunkSize, Vector2Int[] entrances = null)

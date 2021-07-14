@@ -16,6 +16,7 @@ public class TerrainManager : MonoBehaviour
 
     public ChunkGenerator ForestChunkGenerator;
     public ChunkGenerator DesertChunkGenerator;
+    public ChunkGenerator SwampChunkGenerator;
 
     private ChunkControl[,] Chunks;
     private List<Vector2Int> ChunksRequested;
@@ -29,9 +30,10 @@ public class TerrainManager : MonoBehaviour
         ChunksStillLoading = new List<ChunkControl>();
         PlayerAvatar.transform.position = new Vector2(0, 800);
 
-        Biome[] biomes = new Biome[2];
+        Biome[] biomes = new Biome[3];
         biomes[0] = Biome.FOREST;
         biomes[1] = Biome.DESERT;
+        biomes[2] = Biome.SWAMP;
         BiomeMapInfo = BiomeGenerator.GenerateMap(200, 200, 50, biomes);
     }
 
@@ -123,6 +125,9 @@ public class TerrainManager : MonoBehaviour
                     break;
                 case Biome.DESERT:
                     DesertChunkGenerator.RequestChunkControl(OnChunkControlReceived, coord, ChunkSize, entrances);
+                    break;
+                case Biome.SWAMP:
+                    SwampChunkGenerator.RequestChunkControl(OnChunkControlReceived, coord, ChunkSize, entrances);
                     break;
                 default:
                     ForestChunkGenerator.RequestChunkControl(OnChunkControlReceived, coord, ChunkSize, entrances);

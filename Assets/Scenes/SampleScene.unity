@@ -429,6 +429,7 @@ GameObject:
   - component: {fileID: 588184131}
   - component: {fileID: 588184129}
   - component: {fileID: 588184130}
+  - component: {fileID: 588184135}
   - component: {fileID: 588184134}
   m_Layer: 0
   m_Name: TerrainManager
@@ -576,10 +577,11 @@ MonoBehaviour:
   PlayerAvatar: {fileID: 695518141}
   playerGridPosition: {x: 0, y: 0}
   ChunkSize: 30
-  maxNbObjectLoadedEachFrame: 200
+  maxNbObjectLoadedEachFrame: 120
   BiomeGenerator: {fileID: 588184131}
   ForestChunkGenerator: {fileID: 588184129}
   DesertChunkGenerator: {fileID: 588184130}
+  SwampChunkGenerator: {fileID: 588184135}
 --- !u!4 &588184133
 Transform:
   m_ObjectHideFlags: 0
@@ -601,17 +603,65 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 588184128}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 22c6ac4773c0878418706d6d4233212b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BoundaryTile: {fileID: 11400000, guid: af284d6ebe600df4f9006ecc2c7a8766, type: 2}
-  ForestGrassTile: {fileID: 11400000, guid: 79ed0b5fd74041b46ad9b4a97e8f001e, type: 2}
-  ForestDirtTile: {fileID: 11400000, guid: 4a93726958f310b409c85052223ae324, type: 2}
-  DesertSandTile: {fileID: 11400000, guid: 22482f42d8c87a44da5e2f608c1da97f, type: 2}
+  BoundaryTile: {fileID: 0}
+  ForestGrassTile: {fileID: 0}
+  ForestDirtTile: {fileID: 0}
+  DesertSandTile: {fileID: 0}
   Rocks:
   - {fileID: 8429958458600897553, guid: df7ab1d29acf3634fb301878ca09c68b, type: 3}
+--- !u!114 &588184135
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 588184128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc6aad8aad18d384c949d426f08bb157, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BoundaryTile: {fileID: 11400000, guid: af284d6ebe600df4f9006ecc2c7a8766, type: 2}
+  ExtraBoundary: {fileID: 11400000, guid: ae41fa5f76cffff4987615c57d9f3850, type: 2}
+  SwampGrassTile: {fileID: 11400000, guid: 0271ae2785cb259429f7f991d33ca285, type: 2}
+  SwampDirtTile: {fileID: 11400000, guid: 1a57c4e0088657e42b36e8a9cf8edbbd, type: 2}
+  SwampWaterTile: {fileID: 11400000, guid: 212543d7130c35544a5654901485f701, type: 2}
+  BiomeData: {fileID: 11400000, guid: bff0b24044669c04c8fa59f097c29df5, type: 2}
+  Trees:
+  - {fileID: 1077053364953654522, guid: 7123b0de3824af346b6f40c5419c7821, type: 3}
+  - {fileID: 1192186188216981529, guid: a0def0428bb511148a5801cabcf83ded, type: 3}
+  - {fileID: 2505985584064393908, guid: 0656f48c4d1947940b2650cef25d1a4c, type: 3}
+  - {fileID: 3076206658138214763, guid: d3e2b7a959bdedc4eb4b6bfc55b6eb13, type: 3}
+  - {fileID: 2866841572437962947, guid: 073aa099892e51e4584ba4c2e6f6aa4f, type: 3}
+  Bushes:
+  - {fileID: 8463055717606823269, guid: d336eaed74b95f748a81867f9bf36e95, type: 3}
+  - {fileID: 6048344127171570145, guid: ae3718bf157ddcf43895c03a39f3c5bf, type: 3}
+  - {fileID: 8026211980078357394, guid: bfc303bab69257f4c9c96269f33e8cef, type: 3}
+  - {fileID: 8840506673588775982, guid: b91fd917b5eba8449bd929d346c06e52, type: 3}
+  - {fileID: 5728667414538173985, guid: e93756f662f36d94a8e30449f3e1b4ce, type: 3}
+  - {fileID: 5860961009501229638, guid: e888e98db3f3ddf4d89e44aabef68766, type: 3}
+  Cattails:
+  - {fileID: 3677406328927562354, guid: fc4b503eddbf8654ca43df2275681e93, type: 3}
+  - {fileID: 1985155018341244686, guid: dfcd361743684084ba811e423cff652f, type: 3}
+  - {fileID: 831869069403554692, guid: c8b32651d27b79e4cab2b1f408d1ac31, type: 3}
+  - {fileID: 2588528279184673048, guid: 60e6e5564df915c458501626b2b355bb, type: 3}
+  - {fileID: 8891756154128561553, guid: 64ac99e85c14ed54a99b0819b9dd01d5, type: 3}
+  - {fileID: 7762865837897047743, guid: 4f76a5138c1c9524ab1e34a12c4bea62, type: 3}
+  - {fileID: 5149919934235595458, guid: 263319cf7a5fab74aab8e8d6d137425a, type: 3}
+  Waterlilies:
+  - {fileID: 1468576386614006646, guid: b871234842d16a640bfe212b07bb4db0, type: 3}
+  - {fileID: 476398221722820062, guid: 9509c12acfb785847aa16e52bd923ae2, type: 3}
+  - {fileID: 5699172769244673183, guid: 8f612e4139ef74146b2b3af1ce0324dc, type: 3}
+  - {fileID: 1006112104684723084, guid: 8e4cec6188196de42a86c3be6d5c5c68, type: 3}
+  - {fileID: 6765592193866759015, guid: c7930525dbcfe814e98efa53b246ccf4, type: 3}
+  - {fileID: 7782776172842750952, guid: cc1e8a5982cc96f41b96818d509ccd7b, type: 3}
+  - {fileID: 151153092744433071, guid: ddd53311b5f790a4f907832afeb466c3, type: 3}
+  - {fileID: 7001277624565839990, guid: 1170597d11735e54587bc6aa50e60ef6, type: 3}
 --- !u!1 &695518141
 GameObject:
   m_ObjectHideFlags: 0

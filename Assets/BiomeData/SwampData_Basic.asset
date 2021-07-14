@@ -1,0 +1,122 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef3599af3b2626e4db7e0538f82f04ca, type: 3}
+  m_Name: SwampData_Basic
+  m_EditorClassIdentifier: 
+  TreeSparcity: 4.8
+  ShrubSparcity: 0.9
+  CattailSparcity: 0.55
+  WaterlilySparcity: 1.3
+  GroundCohesion: 45
+  WaterThreshold: 0.12
+  ShrubsNoiseSettings:
+    scale: 50
+    octaves: 4
+    persistance: 0.635
+    lacunarity: 3.11
+    seedIndex: 0
+    offset: {x: 0, y: 0}
+  WaterNoiseSettings:
+    scale: 18
+    octaves: 4
+    persistance: 0.594
+    lacunarity: 2.36
+    seedIndex: 0
+    offset: {x: 0, y: 0}
+  CattailNoiseSettings:
+    scale: 50
+    octaves: 5
+    persistance: 0.54
+    lacunarity: 1
+    seedIndex: 0
+    offset: {x: 0, y: 0}
+  BushesDistributionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  CattailDistributionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -0.0039634705
+      value: 0.08337364
+      inSlope: 0.09864765
+      outSlope: 0.09864765
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.43008894
+    - serializedVersion: 3
+      time: 0.22238404
+      value: 0.95492834
+      inSlope: Infinity
+      outSlope: Infinity
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.30393496
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1.0013428
+      value: 1
+      inSlope: 0.040119864
+      outSlope: 0.040119864
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.11901833
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  WaterlilyDistributionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4

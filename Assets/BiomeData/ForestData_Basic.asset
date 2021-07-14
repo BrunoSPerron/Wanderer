@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e35c718c97fc70243857200b79db039b, type: 3}
   m_Name: ForestData_Basic
   m_EditorClassIdentifier: 
-  GroundCohesion: 80
+  GroundCohesion: 70
   TreesSparcity: 4.5
   BushesSparcity: 1.1
   SmallBushesSparcity: 0.5
