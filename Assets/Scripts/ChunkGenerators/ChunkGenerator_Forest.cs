@@ -5,9 +5,6 @@ using UnityEngine.Tilemaps;
 
 public class ChunkGenerator_Forest : ChunkGenerator
 {
-    public TileBase ForestGrassTile;
-    public TileBase ForestDirtTile;
-
     public BiomeData_Forest BiomeData;
 
     public GameObject[] Trees;
@@ -31,24 +28,22 @@ public class ChunkGenerator_Forest : ChunkGenerator
         RocksWithInfos = ExtractInfosFrom(Rocks);
     }
 
-    protected override ChunkControl GenerateChunk(Vector2Int chunkCoord, int ChunkSize, Vector2Int[] entrances = null)
+    public override ChunkControl GenerateChunk(Vector2Int chunkCoord, int ChunkSize, Cardinal entrances = 0)
     {
         ChunkControl cc = new ChunkControl(chunkCoord, ChunkSize, entrances);
+        System.Random rand = new System.Random(WorldData.Seed + (cc.ChunkCoord.x << 16 + cc.ChunkCoord.y));
 
-        FillWith(cc, TileType.GRASS);
-        AddRoads(cc, TileType.DIRT);
+        FillWith(cc, TileType.FORESTGRASS);
+        AddRoads(cc, TileType.FORESTDIRT, 0.3f);
         AddSome(cc, RocksWithInfos, rand.Next(BiomeData.MinAmountOfRock, BiomeData.MaxAmountOfRock));
         PoissonDistribution(cc, TreesWithInfos, BiomeData.TreesSparcity);
         PoissonDistributionWithPerlinNoise(cc, BushesWithInfos, BiomeData.BushesSparcity, BiomeData.BushesNoiseSettings, BiomeData.BushesDistributionCurve);
         PoissonDistributionWithPerlinNoise(cc, SmallBushesWithInfos, BiomeData.SmallBushesSparcity, BiomeData.BushesNoiseSettings, BiomeData.SmallBushesDistributionCurve);
         PoissonDistributionWithPerlinNoise(cc, SmallPlantsWithInfos, BiomeData.FlowerSparcity, BiomeData.BushesNoiseSettings, BiomeData.FlowerChance, BiomeData.SmallBushesDistributionCurve, true, true);
         
-        ShatterGround(cc, TileType.GRASS, TileType.DIRT, 100 - BiomeData.GroundCohesion, true);
+        ShatterGround(cc, TileType.FORESTGRASS, TileType.FORESTDIRT, 100 - BiomeData.GroundCohesion, true);
 
-        Dictionary<TileType, TileBase> tileDict = new Dictionary<TileType, TileBase>();
-        tileDict.Add(TileType.GRASS, ForestGrassTile);
-        tileDict.Add(TileType.DIRT, ForestDirtTile);
-        AddTilesToLoadQueue(cc, tileDict);
+        AddTilesToLoadQueue(cc);
         return cc;
     }
 }

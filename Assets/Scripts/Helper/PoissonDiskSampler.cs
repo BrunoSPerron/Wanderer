@@ -22,7 +22,7 @@ using System.Collections.Generic;
 public class PoissonDiscSampler
 {
     private System.Random rand;
-    private const int k = 20;  // Maximum number of attempts before marking a sample as inactive.
+    private const int k = 30;  // Maximum number of attempts before marking a sample as inactive.
 
     private readonly Rect rect;
     private readonly float radius2;  // radius squared
@@ -35,9 +35,9 @@ public class PoissonDiscSampler
     /// width:  each sample's x coordinate will be between [0, width]
     /// height: each sample's y coordinate will be between [0, height]
     /// radius: each sample will be at least `radius` units away from any other sample, and at most 2 * `radius`.
-    public PoissonDiscSampler(float width, float height, float radius)
+    public PoissonDiscSampler(System.Random rand, float width, float height, float radius)
     {
-        rand = new System.Random();
+        this.rand = rand;
         rect = new Rect(0, 0, width, height);
         radius2 = radius * radius;
         cellSize = radius / Mathf.Sqrt(2);

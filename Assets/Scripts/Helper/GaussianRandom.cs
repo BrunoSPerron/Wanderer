@@ -2,10 +2,8 @@ using UnityEngine;
 
 public static class GaussianRandom
 {
-    private static System.Random rand = new System.Random();
-
     /// <returns>unclamped random value from a normal distribution</returns>
-    public static float generateNormalRandom(float mean = 0, float deviation = 1)
+    public static float generateNormalRandom(System.Random rand, float mean = 0, float deviation = 1)
     {
         float rand1 = (float)rand.NextDouble();
         float rand2 = (float)rand.NextDouble();

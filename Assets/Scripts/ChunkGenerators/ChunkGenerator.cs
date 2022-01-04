@@ -5,17 +5,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public enum TileType : byte { NONE, BOUNDARY, BOUNDARY2, GRASS, DIRT, SAND, ARID, MUD, SWAMPWATER }
+public enum TileType : byte { NONE, BOUNDARY, BOUNDARY2, RIVERBOUNDARY, RIVERFOREST, FORESTGRASS, FORESTDIRT, DESERTSAND, DESERTARID, SWAMPGRASS, SWAMPMUD, SWAMPWATER, RIVERDESERT, RIVERSWAMP, RIVER }
+//Reminder: Add only at end of enum to preserve TileCollection order
 
 public abstract class ChunkGenerator : MonoBehaviour
 {
-    protected static System.Random rand = new System.Random();
+    public TileType BiomeRiver;
+    public TileType RiverBank;
 
-    public TileBase BoundaryTile;  //Used for seamless roads between chunks
+    protected Queue<ChunkThreadInfo<ChunkControl>> ChunkThreadInfoQueue = new Queue<ChunkThreadInfo<ChunkControl>>();
 
-    Queue<ChunkThreadInfo<ChunkControl>> ChunkThreadInfoQueue = new Queue<ChunkThreadInfo<ChunkControl>>();
-
-    public void RequestChunkControl(Action<ChunkControl> callback, Vector2Int chunkCoord, int ChunkSize, Vector2Int[] entrances = null)
+    public virtual void RequestChunkControl(Action<ChunkControl> callback, Vector2Int chunkCoord, int ChunkSize, Cardinal entrances = 0)
     {
         ThreadStart threadStart = delegate
         {
@@ -24,7 +24,7 @@ public abstract class ChunkGenerator : MonoBehaviour
         new Thread(threadStart).Start();
     }
 
-    void ChunkControlThread(Action<ChunkControl> callback, Vector2Int chunkCoord, int ChunkSize, Vector2Int[] entrances = null)
+    protected virtual void ChunkControlThread(Action<ChunkControl> callback, Vector2Int chunkCoord, int ChunkSize, Cardinal entrances = 0)
     {
         ChunkControl chunkControl = GenerateChunk(chunkCoord, ChunkSize, entrances);
         lock (ChunkThreadInfoQueue)
@@ -62,11 +62,11 @@ public abstract class ChunkGenerator : MonoBehaviour
         return goi;
     }
 
-    protected abstract ChunkControl GenerateChunk(Vector2Int chunkCoord, int ChunkSize, Vector2Int[] entrances = null);
+    public abstract ChunkControl GenerateChunk(Vector2Int chunkCoord, int ChunkSize, Cardinal entrances = 0);
 
-    protected void AddTilesToLoadQueue(ChunkControl cc, Dictionary<TileType, TileBase> TilesDict)
+    protected void AddTilesToLoadQueue(ChunkControl cc)
     {
-        TilesDict.Add(TileType.BOUNDARY, BoundaryTile);
+        Dictionary<TileType, TileBase> TilesDict = TerrainManager.TilesDictionary;
         for (int x = 0; x < cc.TilesInfos.GetLength(0); x++)
         {
             for (int y = 0; y < cc.TilesInfos.GetLength(1); y++)
@@ -84,25 +84,48 @@ public abstract class ChunkGenerator : MonoBehaviour
                 cc.TilesInfos[x, y].type = tile;
     }
 
-    protected void AddRoads(ChunkControl cc, TileType roadTile)
+    protected void AddRoads(ChunkControl cc, TileType roadTile, float straightenLerpValue = 0.5f)
     {
-        if (cc.Entrances == null) return;
-        for (int i = 0; i < cc.Entrances.Length; i++)
-        {
-            if (cc.Entrances[i].x < 0)
-                cc.Entrances[i].x = 0;
-            else if (cc.Entrances[i].x > cc.GridSize)
-                cc.Entrances[i].x = cc.GridSize;
+        if (cc.Entrances == 0) return;
 
-            if (cc.Entrances[i].y < 0)
-                cc.Entrances[i].y = 0;
-            else if (cc.Entrances[i].y > cc.GridSize)
-                cc.Entrances[i].y = cc.GridSize;
+        System.Random rand = new System.Random(WorldData.Seed + (cc.ChunkCoord.x << 16 + cc.ChunkCoord.y));
+        List<Vector2Int> chunkEntrances = new List<Vector2Int>();
+
+        if ((cc.Entrances & Cardinal.E) == Cardinal.E)
+        {
+            System.Random localrand = new System.Random(WorldData.Seed + (cc.ChunkCoord.x + 1 << 16 + cc.ChunkCoord.y));
+            chunkEntrances.Add(new Vector2Int(cc.GridSize, (int)((GaussianRandom.generateNormalRandom(localrand, 0, 1) + 4) / 8 * cc.GridSize)));
+        }
+        if ((cc.Entrances & Cardinal.W) == Cardinal.W)
+        {
+            chunkEntrances.Add(new Vector2Int(0, (int)((GaussianRandom.generateNormalRandom(rand, 0, 1) + 4) / 8 * cc.GridSize)));
+        }
+        if ((cc.Entrances & Cardinal.S) == Cardinal.S)
+        {
+            System.Random localrand = new System.Random(WorldData.Seed + cc.ChunkCoord.x + (cc.ChunkCoord.y << 16));
+            chunkEntrances.Add(new Vector2Int((int)((GaussianRandom.generateNormalRandom(localrand, 0, 1) + 4) / 8 * cc.GridSize), 0));
+        }
+        if ((cc.Entrances & Cardinal.N) == Cardinal.N)
+        {
+            System.Random localrand = new System.Random(WorldData.Seed + cc.ChunkCoord.x + (cc.ChunkCoord.y + 1 << 16));
+            chunkEntrances.Add(new Vector2Int((int)((GaussianRandom.generateNormalRandom(localrand, 0, 1) + 4) / 8 * cc.GridSize), cc.GridSize));
         }
 
-        Vector2Int waypoint = new Vector2Int((int)((GaussianRandom.generateNormalRandom(0, 1) + 4) / 8 * cc.GridSize) + 1, (int)((GaussianRandom.generateNormalRandom(0, 1) + 4) / 8 * cc.GridSize) + 1);
-        waypoint.Clamp(new Vector2Int(2, 2), new Vector2Int(cc.GridSize - 1, cc.GridSize - 1));
-        foreach (Vector2Int entrance in cc.Entrances)
+        Vector2 centerPoint = Vector2.zero;
+        foreach (Vector2Int v2i in chunkEntrances)
+        {
+            centerPoint.x += v2i.x;
+            centerPoint.y += v2i.y;
+        }
+        centerPoint /= chunkEntrances.Count;
+
+
+        Vector2 waypoint = new Vector2Int((int)((GaussianRandom.generateNormalRandom( rand ,0, 1) + 4) / 8 * cc.GridSize) + 1, (int)((GaussianRandom.generateNormalRandom(rand, 0, 1) + 4) / 8 * cc.GridSize) + 1);
+        waypoint = Vector2.Lerp(waypoint, centerPoint, straightenLerpValue);
+        Vector2Int intWaypoint = new Vector2Int((int)waypoint.x, (int)waypoint.y);
+
+        intWaypoint.Clamp(new Vector2Int(2, 2), new Vector2Int(cc.GridSize - 1, cc.GridSize - 1));
+        foreach (Vector2Int entrance in chunkEntrances)
         {
             int x = entrance.x;
             int y = entrance.y;
@@ -112,23 +135,23 @@ public abstract class ChunkGenerator : MonoBehaviour
             if (y < 2) y = 2;
             if (y > cc.GridSize - 1) y = cc.GridSize - 1;
 
-            while (x != waypoint.x || y != waypoint.y)
+            while (x != intWaypoint.x || y != intWaypoint.y)
             {
                 SurroundTileWith(cc, x, y, roadTile, true);
 
-                int weightX = Mathf.Abs(Mathf.Abs(x) - Mathf.Abs(waypoint.x));
-                int weightY = Mathf.Abs(Mathf.Abs(y) - Mathf.Abs(waypoint.y));
+                int weightX = Mathf.Abs(Mathf.Abs(x) - Mathf.Abs(intWaypoint.x));
+                int weightY = Mathf.Abs(Mathf.Abs(y) - Mathf.Abs(intWaypoint.y));
 
                 if (rand.Next(0, weightX + weightY) < weightX)
                 {
-                    if (x < waypoint.x)
+                    if (x < intWaypoint.x)
                         x++;
                     else
                         x--;
                 }
                 else
                 {
-                    if (y < waypoint.y)
+                    if (y < intWaypoint.y)
                         y++;
                     else
                         y--;
@@ -278,6 +301,7 @@ public abstract class ChunkGenerator : MonoBehaviour
 
     protected void AddSome(ChunkControl cc, GameObjectInfo[] objects, int amount, bool avoidRoad = true, uint maxIterations = 30)
     {
+        System.Random rand = new System.Random(WorldData.Seed + (cc.ChunkCoord.x << 16 + cc.ChunkCoord.y));
         int objectIndex = rand.Next(0, objects.Length);
         for (int i = 0; i < amount; i++)
         {
@@ -309,19 +333,22 @@ public abstract class ChunkGenerator : MonoBehaviour
 
     protected void PoissonDistribution(ChunkControl cc, GameObjectInfo[] objects, float averageDistance, bool avoidRoad = true)
     {
+        float distanceFromBorder = averageDistance / 2;
+        System.Random rand = new System.Random(WorldData.Seed + (cc.ChunkCoord.x << 16 + cc.ChunkCoord.y));
         List<Tuple<GameObjectInfo, Vector2, List<Vector2Int>>> doodadToAdd = new List<Tuple<GameObjectInfo, Vector2, List<Vector2Int>>>();
-        PoissonDiscSampler sampler = new PoissonDiscSampler(cc.GridSize, cc.GridSize, averageDistance);
+        PoissonDiscSampler sampler = new PoissonDiscSampler(rand, cc.GridSize - distanceFromBorder * 2, cc.GridSize - distanceFromBorder * 2, averageDistance);
         int i = 0;
         foreach (Vector2 position in sampler.Samples())
         {
+            Vector2 offsettedPos = position + new Vector2(distanceFromBorder, distanceFromBorder);
             int currentGoiIndex = i % objects.Length;
             bool positionIsOK = true;
             if (avoidRoad)
-                positionIsOK = !IsOverRoad(cc, position, objects[currentGoiIndex].radius);
+                positionIsOK = !IsOverRoad(cc, offsettedPos, objects[currentGoiIndex].radius);
 
-            if (positionIsOK && CheckPlacementValidity(cc, objects[currentGoiIndex], position, out List<Vector2Int> tilesOverlapping))
+            if (positionIsOK && CheckPlacementValidity(cc, objects[currentGoiIndex], offsettedPos, out List<Vector2Int> tilesOverlapping))
             {
-                doodadToAdd.Add(new Tuple<GameObjectInfo, Vector2, List<Vector2Int>>(objects[currentGoiIndex], position, tilesOverlapping));
+                doodadToAdd.Add(new Tuple<GameObjectInfo, Vector2, List<Vector2Int>>(objects[currentGoiIndex], offsettedPos, tilesOverlapping));
                 i++;
             }
         }
@@ -334,6 +361,7 @@ public abstract class ChunkGenerator : MonoBehaviour
 
     protected void ShatterGround(ChunkControl cc, TileType original, TileType replaceBy, int percentChance = 20, bool awayFromRoad = false)
     {
+        System.Random rand = new System.Random(WorldData.Seed + (cc.ChunkCoord.x << 16 + cc.ChunkCoord.y));
         for (int x = 1; x < cc.TilesInfos.GetLength(0); x++)
             for (int y = 1; y < cc.TilesInfos.GetLength(1); y++)
                 if (!awayFromRoad || !TileIsNextToRoad(cc, new Vector2Int(x - 1, y - 1)))
@@ -344,6 +372,8 @@ public abstract class ChunkGenerator : MonoBehaviour
 
     protected void PoissonDistributionWithPerlinNoise(ChunkControl cc, GameObjectInfo[] objects, float averageDistance, NoiseSettings noiseSettings, int arbitraryChance = 100, AnimationCurve distributionCurve = null, bool avoidRoad = true, bool reverseNoise = false)
     {
+        float distanceFromBorder = averageDistance / 2;
+        System.Random rand = new System.Random(WorldData.Seed + (cc.ChunkCoord.x << 16 + cc.ChunkCoord.y));
         AnimationCurve curveInstance;
         if (distributionCurve == null)
             curveInstance = AnimationCurve.Linear(0, 0, 1, 1);
@@ -352,7 +382,7 @@ public abstract class ChunkGenerator : MonoBehaviour
 
         List<Tuple<GameObjectInfo, Vector2, List<Vector2Int>>> doodadToAdd = new List<Tuple<GameObjectInfo, Vector2, List<Vector2Int>>>();
 
-        PoissonDiscSampler sampler = new PoissonDiscSampler(cc.GridSize, cc.GridSize, averageDistance);
+        PoissonDiscSampler sampler = new PoissonDiscSampler(rand, cc.GridSize - distanceFromBorder * 2, cc.GridSize - distanceFromBorder * 2, averageDistance);
         float[,] noiseMap = Noise.GenerateNoiseMap(cc.GridSize, cc.GridSize, noiseSettings, cc.ChunkCoord * cc.GridSize);
 
         int amountPlaced = 0;
@@ -360,8 +390,9 @@ public abstract class ChunkGenerator : MonoBehaviour
         {
             if (arbitraryChance > rand.Next(0, 100))
             {
-                int x = (int)position.x;
-                int y = (int)position.y;
+                Vector2 offsettedPos = position + new Vector2(distanceFromBorder, distanceFromBorder);
+                int x = (int)offsettedPos.x;
+                int y = (int)offsettedPos.y;
                 bool placeThisOne = true;
                 int currentGoiIndex = amountPlaced % objects.Length;
                 if (avoidRoad)
@@ -380,9 +411,9 @@ public abstract class ChunkGenerator : MonoBehaviour
                         placeThisOne = false;
                 }
 
-                if (placeThisOne && CheckPlacementValidity(cc, objects[currentGoiIndex], position, out List<Vector2Int> tilesOverlapping))
+                if (placeThisOne && CheckPlacementValidity(cc, objects[currentGoiIndex], offsettedPos, out List<Vector2Int> tilesOverlapping))
                 {
-                    doodadToAdd.Add(new Tuple<GameObjectInfo, Vector2, List<Vector2Int>>(objects[currentGoiIndex], position, tilesOverlapping));
+                    doodadToAdd.Add(new Tuple<GameObjectInfo, Vector2, List<Vector2Int>>(objects[currentGoiIndex], offsettedPos, tilesOverlapping));
                     amountPlaced++;
                 }
             }
@@ -393,12 +424,12 @@ public abstract class ChunkGenerator : MonoBehaviour
         }
     }
     protected void PoissonDistributionWithPerlinNoise(ChunkControl cc, GameObjectInfo[] objects, float averageDistance, NoiseSettings noise, AnimationCurve distributionCurve)
-    {
-        PoissonDistributionWithPerlinNoise(cc, objects, averageDistance, noise, 100, distributionCurve);
-    }
+        =>PoissonDistributionWithPerlinNoise(cc, objects, averageDistance, noise, 100, distributionCurve);
+    
 
     protected void PoissonDistributionWithPerlinOnTileEdge(ChunkControl cc, GameObjectInfo[] objects, TileType onTile, float averageDistance, NoiseSettings noiseSettings, AnimationCurve distributionCurve = null, bool avoidRoad = true, int arbitraryChance = 100, bool reverseNoise = false)
     {
+        System.Random rand = new System.Random(WorldData.Seed + (cc.ChunkCoord.x << 16 + cc.ChunkCoord.y));
         AnimationCurve curveInstance;
         if (distributionCurve == null)
             curveInstance = AnimationCurve.Linear(0, 0, 1, 1);
@@ -407,7 +438,7 @@ public abstract class ChunkGenerator : MonoBehaviour
 
         List<Tuple<GameObjectInfo, Vector2, List<Vector2Int>>> doodadToAdd = new List<Tuple<GameObjectInfo, Vector2, List<Vector2Int>>>();
 
-        PoissonDiscSampler sampler = new PoissonDiscSampler(cc.GridSize, cc.GridSize, averageDistance);
+        PoissonDiscSampler sampler = new PoissonDiscSampler(rand, cc.GridSize, cc.GridSize, averageDistance);
         float[,] noiseMap = Noise.GenerateNoiseMap(cc.GridSize, cc.GridSize, noiseSettings, cc.ChunkCoord * cc.GridSize);
 
         int amountPlaced = 0;
@@ -459,6 +490,7 @@ public abstract class ChunkGenerator : MonoBehaviour
 
     protected void PoissonDistributionWithPerlinOnSurroundedTile(ChunkControl cc, GameObjectInfo[] objects, TileType onTile, float averageDistance, NoiseSettings noiseSettings, AnimationCurve distributionCurve = null, bool avoidRoad = true, bool reverseNoise = false)
     {
+        System.Random rand = new System.Random(WorldData.Seed + (cc.ChunkCoord.x << 16 + cc.ChunkCoord.y));
         AnimationCurve curveInstance;
         if (distributionCurve == null)
             curveInstance = AnimationCurve.Linear(0, 0, 1, 1);
@@ -467,7 +499,7 @@ public abstract class ChunkGenerator : MonoBehaviour
 
         List<Tuple<GameObjectInfo, Vector2, List<Vector2Int>>> doodadToAdd = new List<Tuple<GameObjectInfo, Vector2, List<Vector2Int>>>();
 
-        PoissonDiscSampler sampler = new PoissonDiscSampler(cc.GridSize, cc.GridSize, averageDistance);
+        PoissonDiscSampler sampler = new PoissonDiscSampler(rand, cc.GridSize, cc.GridSize, averageDistance);
         float[,] noiseMap = Noise.GenerateNoiseMap(cc.GridSize, cc.GridSize, noiseSettings, cc.ChunkCoord * cc.GridSize);
 
         int amountPlaced = 0;
@@ -517,8 +549,10 @@ public abstract class ChunkGenerator : MonoBehaviour
             cc.AddDoodadAtPosition(tuple.Item1, tuple.Item2, tuple.Item3);
         }
     }
+    
     protected void PoissonDistributionWithPerlinNoiseOnTiletype(ChunkControl cc, GameObjectInfo[] objects, TileType onTile, float averageDistance, NoiseSettings noiseSettings, AnimationCurve distributionCurve = null, bool avoidRoad = true, int arbitraryChance = 100, bool reverseNoise = false)
     {
+        System.Random rand = new System.Random(WorldData.Seed + (cc.ChunkCoord.x << 16 + cc.ChunkCoord.y));
         AnimationCurve curveInstance;
         if (distributionCurve == null)
             curveInstance = AnimationCurve.Linear(0, 0, 1, 1);
@@ -527,7 +561,7 @@ public abstract class ChunkGenerator : MonoBehaviour
 
         List<Tuple<GameObjectInfo, Vector2, List<Vector2Int>>> doodadToAdd = new List<Tuple<GameObjectInfo, Vector2, List<Vector2Int>>>();
 
-        PoissonDiscSampler sampler = new PoissonDiscSampler(cc.GridSize, cc.GridSize, averageDistance);
+        PoissonDiscSampler sampler = new PoissonDiscSampler(rand, cc.GridSize, cc.GridSize, averageDistance);
         float[,] noiseMap = Noise.GenerateNoiseMap(cc.GridSize, cc.GridSize, noiseSettings, cc.ChunkCoord * cc.GridSize);
 
         int amountPlaced = 0;
@@ -590,7 +624,7 @@ public abstract class ChunkGenerator : MonoBehaviour
         {
             Tuple<Vector2, float> currentCheck = checkAgainst.Pop();
 
-            if (TerrainHelper.IsWithinDistance(gridPosition, currentCheck.Item1, goi.radius + currentCheck.Item2))
+            if (IsoGridHelper.IsWithinDistance(gridPosition, currentCheck.Item1, goi.radius + currentCheck.Item2))
                 return false;
         }
 
@@ -622,6 +656,7 @@ public abstract class ChunkGenerator : MonoBehaviour
 
         return false;
     }
+
     private bool TileIsNextToRoad(ChunkControl cc, Vector2Int gridPosition, int checkDistance = 1)
     {
         for (int x = gridPosition.x - checkDistance; x <= gridPosition.x + checkDistance; x++)
@@ -693,7 +728,7 @@ public abstract class ChunkGenerator : MonoBehaviour
     }
 
 
-    struct ChunkThreadInfo<T>
+    protected struct ChunkThreadInfo<T>
     {
         public readonly Action<T> callback;
         public readonly T parameter;

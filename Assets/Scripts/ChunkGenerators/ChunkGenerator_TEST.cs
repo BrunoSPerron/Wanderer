@@ -5,10 +5,6 @@ using UnityEngine.Tilemaps;
 
 public class ChunkGenerator_TEST : ChunkGenerator
 {
-    public TileBase ForestGrassTile;
-    public TileBase ForestDirtTile;
-    public TileBase DesertSandTile;
-
     public GameObject[] Rocks;
     private GameObjectInfo[] RocksWithInfos;
 
@@ -18,22 +14,18 @@ public class ChunkGenerator_TEST : ChunkGenerator
         RocksWithInfos = ExtractInfosFrom(Rocks);
     }
 
-    protected override ChunkControl GenerateChunk(Vector2Int chunkCoord, int ChunkSize, Vector2Int[] entrances = null)
+    public override ChunkControl GenerateChunk(Vector2Int chunkCoord, int ChunkSize, Cardinal entrances = 0)
     {
         ChunkControl cc = new ChunkControl(chunkCoord, ChunkSize, entrances);
 
-        FillWith(cc, TileType.GRASS);
-        AddRoads(cc, TileType.DIRT);
+        FillWith(cc, TileType.FORESTGRASS);
+        AddRoads(cc, TileType.FORESTDIRT);
 
         //AddSome(cc, RocksWithInfos, 200);
         //PoissonDistribution(cc, RocksWithInfos, 0.5f);
-        ShatterGround(cc, TileType.GRASS, TileType.SAND, 100, true);
+        ShatterGround(cc, TileType.FORESTGRASS, TileType.DESERTSAND, 100, true);
 
-        Dictionary<TileType, TileBase> tileDict = new Dictionary<TileType, TileBase>();
-        tileDict.Add(TileType.GRASS, ForestGrassTile);
-        tileDict.Add(TileType.DIRT, ForestDirtTile);
-        tileDict.Add(TileType.SAND, DesertSandTile);
-        AddTilesToLoadQueue(cc, tileDict);
+        AddTilesToLoadQueue(cc);
 
         return cc;
     }

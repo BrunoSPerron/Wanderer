@@ -5,9 +5,6 @@ using UnityEngine.Tilemaps;
 
 public class ChunkGenerator_Desert : ChunkGenerator
 {
-    public TileBase SandTile;
-    public TileBase AridTile;
-
     public BiomeData_Desert BiomeData;
 
     public GameObject[] Cacti;
@@ -30,12 +27,13 @@ public class ChunkGenerator_Desert : ChunkGenerator
         ShrubsInfos = ExtractInfosFrom(Shrubs);
     }
 
-    protected override ChunkControl GenerateChunk(Vector2Int chunkCoord, int ChunkSize, Vector2Int[] entrances = null)
+    public override ChunkControl GenerateChunk(Vector2Int chunkCoord, int ChunkSize, Cardinal entrances = 0)
     {
         ChunkControl cc = new ChunkControl(chunkCoord, ChunkSize, entrances);
+        System.Random rand = new System.Random(WorldData.Seed + (cc.ChunkCoord.x << 16 + cc.ChunkCoord.y));
 
-        FillWith(cc, TileType.SAND);
-        AddRoads(cc, TileType.ARID);
+        FillWith(cc, TileType.DESERTSAND);
+        AddRoads(cc, TileType.DESERTARID, 0.8f);
 
         int nbOfBonesToAdd = 0;
         for (int i = 0; i < BiomeData.maxBones; i++)
@@ -48,10 +46,7 @@ public class ChunkGenerator_Desert : ChunkGenerator
         PoissonDistributionWithPerlinNoise(cc, ShrubsInfos, BiomeData.ShrubSparcity, BiomeData.NoiseSettings, BiomeData.ShrubChance, BiomeData.ShrubsDistributionCurve);
         PoissonDistribution(cc, CactiInfos, BiomeData.CactiSparcity);
 
-        Dictionary<TileType, TileBase> tileDict = new Dictionary<TileType, TileBase>();
-        tileDict.Add(TileType.SAND, SandTile);
-        tileDict.Add(TileType.ARID, AridTile);
-        AddTilesToLoadQueue(cc, tileDict);
+        AddTilesToLoadQueue(cc);
 
         return cc;
     }

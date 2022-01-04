@@ -9,7 +9,7 @@ public class ChunkControl
 
     public int GridSize;
     public Vector2Int ChunkCoord;
-    public Vector2Int[] Entrances;
+    public Cardinal Entrances;
 
     public tileInfo[,] TilesInfos;
     public bool[,] IsRoad;
@@ -18,11 +18,11 @@ public class ChunkControl
 
     private Stack<TileToInstantiate> TilesToInstantiate;
 
-    private Stack<ObjectToInstantiate> ObjectsToInstantiate;
+    public Stack<ObjectToInstantiate> ObjectsToInstantiate;
 
     internal bool individualRendererMode = false;
 
-    public ChunkControl(Vector2Int coord, int gridSize, Vector2Int[] entrances)
+    public ChunkControl(Vector2Int coord, int gridSize, Cardinal entrances = 0)
     {
         TilesToInstantiate = new Stack<TileToInstantiate>();
         ObjectsToInstantiate = new Stack<ObjectToInstantiate>();
@@ -52,7 +52,7 @@ public class ChunkControl
 
         GameObject mapContainer = new GameObject("Tilemap");
         mapContainer.transform.parent = Chunk.transform;
-        //mapContainer.transform.position = new Vector3(0, -0.05f, 0);
+        mapContainer.transform.position = new Vector3(0, -0.1f, 0);
         TileMap = mapContainer.AddComponent<Tilemap>();
 
         TilemapRenderer tileMapRenderer = mapContainer.AddComponent<TilemapRenderer>();
@@ -61,14 +61,14 @@ public class ChunkControl
         
         if (individualRendererMode)
             tileMapRenderer.mode = TilemapRenderer.Mode.Individual;
-        Chunk.transform.position = TerrainHelper.GridToLocal(ChunkCoord) * GridSize;
+        Chunk.transform.position = IsoGridHelper.GridToLocal(ChunkCoord) * GridSize;
     }
 
     public void AddDoodadAtPosition(GameObjectInfo go, Vector2 gridPos, List<Vector2Int> tilesInRadius)
     {
-        Vector2 localPos = TerrainHelper.GridToLocal(gridPos + Vector2.one);
-        int x = (int)gridPos.x + 1;
-        int y = (int)gridPos.y + 1;
+        Vector2 localPos = IsoGridHelper.GridToLocal(gridPos + Vector2.one);
+        //int x = (int)gridPos.x + 1;
+        //int y = (int)gridPos.y + 1;
         try
         {
             foreach (Vector2Int v2i in tilesInRadius)
@@ -122,42 +122,6 @@ public class ChunkControl
         else return true;
 
         return false;
-    }
-
-    public int GetEntrance(Cardinal direction)
-    {
-        switch (direction)
-        {
-            case Cardinal.NE:
-                foreach (Vector2Int entrance in Entrances)
-                {
-                    if (entrance.x == GridSize)
-                        return entrance.y;
-                }
-                break;
-            case Cardinal.NW:
-                foreach (Vector2Int entrance in Entrances)
-                {
-                    if (entrance.y == GridSize)
-                        return entrance.x;
-                }
-                break;
-            case Cardinal.SW:
-                foreach (Vector2Int entrance in Entrances)
-                {
-                    if (entrance.x == 0)
-                        return entrance.y;
-                }
-                break;
-            case Cardinal.SE:
-                foreach (Vector2Int entrance in Entrances)
-                {
-                    if (entrance.y == 0)
-                        return entrance.x;
-                }
-                break;
-        }
-        return -1;
     }
 
     public void SetActive(bool b = true)

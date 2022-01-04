@@ -4,20 +4,11 @@ using UnityEngine;
 
 public static class Noise
 {
-    public static int[] Seeds;
-
-    public static void Initiate()
-    {
-        Seeds = new int[4];
-        for (int i = 0; i < Seeds.Length; i++)
-            Seeds[i] = System.Guid.NewGuid().GetHashCode();
-    }
-
     public static float[,] GenerateNoiseMap(int mapWidth, int mapHeight, NoiseSettings settings, Vector2 sampleCentre)
     {
         float[,] noiseMap = new float[mapWidth, mapHeight];
 
-        System.Random srand = new System.Random(Seeds[settings.seedIndex]);
+        System.Random srand = new System.Random(WorldData.Seed);
         Vector2[] octaveOffsets = new Vector2[settings.octaves];
 
         float maxPossibleHeight = 0;
@@ -99,8 +90,6 @@ public class NoiseSettings
     [Range(1, 10)]
     public float lacunarity = 2.5f;
 
-    [Range(0,4)]
-    public int seedIndex;
     public Vector2 offset;
 
     public void ValidateValues()
